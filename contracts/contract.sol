@@ -100,6 +100,7 @@ contract CoinKraze {
         contestEnded=true;
         emit ContestEnded(total0Coins, total1Coins, tokenWins);
     }
+    //used from docs
 
 function requestPrice0Feed(string memory _address, string memory _symbol) internal {
         string[] memory apiEndpoint = new string[](1);
@@ -123,7 +124,7 @@ function requestPrice0Feed(string memory _address, string memory _symbol) intern
         );
      Price0feed = feeds[0];
     }
-    
+    //used from docs
 function requestPrice1Feed() public payable {
         string[] memory apiEndpoint = new string[](1);
         apiEndpoint[0] = string.concat(
@@ -145,6 +146,9 @@ function requestPrice1Feed() public payable {
         );
      Price1feed = feeds[0]; 
     }
+
+
+    //used from docs
 
      function Price0() public view returns(uint256 price0) {
 (price0,,,) = morpheus.getFeed(
