@@ -1,5 +1,7 @@
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/Strings.sol";
+
 interface IERC20 {
     function transfer(address recipient, uint256 amount)  external returns (bool);
     function balanceOf(address account) external view returns (uint256);
@@ -85,13 +87,18 @@ contract CoinKraze {
         total1Coins += amount;
         }
     }
-
+    function requestPrice() external payable{
+        require(msg.value>0.002 ether);
+        requestPrice0Feed();
+        requestPrice1Feed();
+    }
 
     function endContest() external {
+        
         require(block.timestamp >= endDate, "Contest has not ended yet");
-
-        uint256 price00 = requestPrice0Feed(token0);
-        uint256 price11 = requestPrice1Feed(token1);
+        uint256 price0= Price0();
+        uint256 price1= Price1(); 
+        require(price0 !=0 && price1 !=0, "Waiting for feed");
         address tokenWins = (price0 * total0Coins) > (price1 * total1Coins)? token0: token1;
 
         uint256 platformFee = (total0Coins + total1Coins) * platformFeePercentage / 100;
@@ -102,10 +109,10 @@ contract CoinKraze {
     }
     //used from docs
 
-function requestPrice0Feed(string memory _address, string memory _symbol) internal {
+function requestPrice0Feed() internal {
         string[] memory apiEndpoint = new string[](1);
         apiEndpoint[0] = string.concat(
-            "https://158.160.4.1/",_address,"/symbol=",_symbol);            
+            "https://158.160.4.1/symbol/",symbol0, "/time/", Strings.toString(endDate));            
 
         string[] memory apiEndpointPath = new string[](1);
         apiEndpointPath[0] = "price";
@@ -128,7 +135,7 @@ function requestPrice0Feed(string memory _address, string memory _symbol) intern
 function requestPrice1Feed() public payable {
         string[] memory apiEndpoint = new string[](1);
         apiEndpoint[0] = string.concat(
-            "https://158.160.4.1/",token1,"/symbol=",symbol1);            
+            "https://158.160.4.1/symbol/",symbol1, "/time/", Strings.toString(endDate));            
 
         string[] memory apiEndpointPath = new string[](1);
         apiEndpointPath[0] = "price";
@@ -170,6 +177,7 @@ function requestPrice1Feed() public payable {
         uint256 profit;
         if(tokenWon== token0){
             bal= Balances0[msg.sender];
+            require(bal>0);
             Balances0[msg.sender]= 0;
             profit = ((bal/ total0Coins))*total1Coins;   
             IERC20(token0).transfer(msg.sender,bal);
@@ -177,6 +185,7 @@ function requestPrice1Feed() public payable {
         }
         else{
             bal= Balances1[msg.sender];
+            require(bal>0);
             Balances1[msg.sender]= 0;
             profit = ((bal/ total1Coins))*total0Coins;   
             IERC20(token1).transfer(msg.sender,bal);
@@ -186,5 +195,4 @@ function requestPrice1Feed() public payable {
 
     }
 }
-
 
