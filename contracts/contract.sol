@@ -112,7 +112,7 @@ contract CoinKraze {
 function requestPrice0Feed() internal {
         string[] memory apiEndpoint = new string[](1);
         apiEndpoint[0] = string.concat(
-            "https://158.160.4.1/symbol/",symbol0, "/time/", Strings.toString(endDate));            
+            "https://flaskk-bye6.onrender.com/",symbol0, "/", Strings.toString(endDate));            
 
         string[] memory apiEndpointPath = new string[](1);
         apiEndpointPath[0] = "price";
@@ -135,7 +135,7 @@ function requestPrice0Feed() internal {
 function requestPrice1Feed() public payable {
         string[] memory apiEndpoint = new string[](1);
         apiEndpoint[0] = string.concat(
-            "https://158.160.4.1/symbol/",symbol1, "/time/", Strings.toString(endDate));            
+            "https://flaskk-bye6.onrender.com/",symbol1, "/", Strings.toString(endDate));            
 
         string[] memory apiEndpointPath = new string[](1);
         apiEndpointPath[0] = "price";
