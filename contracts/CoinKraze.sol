@@ -45,7 +45,10 @@ contract CoinKraze {
     uint256 public total0Coins;
     uint256 public total1Coins;
     string public symbol0;
-    Morpheus morpheus = Morpheus(0x0000000000071821e8033345A7Be174647bE0706);
+    address oracleaddress=0x0000000000071821e8033345A7Be174647bE0706;
+    
+    Morpheus morpheus = Morpheus(oracleaddress);
+
     uint256 public Price0feed ;
     uint256 public Price1feed ;
     string public symbol1;
@@ -55,6 +58,11 @@ contract CoinKraze {
     address tokenWon;
 
     event ContestEnded(uint256 totalAlicecoins, uint256 totalBobcoins, address aliceWins);
+
+    modifier onlyPlatformWallet(){
+        require(platformWallet==msg.sender);
+        _;
+    }
 
     constructor(
         address _platformWallet,
@@ -78,7 +86,7 @@ contract CoinKraze {
         require(block.timestamp < endDate, "Contest has ended");
         require (deposit== token0 || deposit== token1,"Wrong Contest" );
         
-        require(IERC20(deposit).transferFrom(msg.sender, address(this), amount), "Failed to transfer Alicecoins");
+        require(IERC20(deposit).transferFrom(msg.sender, address(this), amount), "Failed to transfer coins");
         if(deposit==token0){
         Balances0[msg.sender] += amount;
         total0Coins += amount;
@@ -174,6 +182,10 @@ function requestPrice1Feed() external payable {
             Price1feed
         );
         return price1;
+    }
+
+    function changeOracleAddress(address _oracle) public onlyPlatformWallet{
+        oracleaddress=_oracle; 
     }
 
 
