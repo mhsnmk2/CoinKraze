@@ -88,9 +88,9 @@ contract CoinKraze {
         }
     }
     function requestPrice() external payable{
-        require(msg.value>0.002 ether);
-        requestPrice0Feed();
-        requestPrice1Feed();
+        require(msg.value>=0.002 ether);
+        this.requestPrice0Feed{value: 0.001 ether}();
+        this.requestPrice1Feed{value: 0.001 ether}();
     }
 
     function endContest() external {
@@ -109,7 +109,8 @@ contract CoinKraze {
     }
     //used from docs
 
-function requestPrice0Feed() internal {
+function requestPrice0Feed() external payable   {
+        require(msg.value>=0.001 ether);
         string[] memory apiEndpoint = new string[](1);
         apiEndpoint[0] = string.concat(
             "https://flaskk-bye6.onrender.com/",symbol0, "/", Strings.toString(endDate));            
@@ -121,9 +122,9 @@ function requestPrice0Feed() internal {
         decimals[0] = 0;
 
         uint256[] memory bounties = new uint256[](1);
-        bounties[0] = 0.0001 ether; // Replace with actual bounty value
+        bounties[0] = 0.001 ether; // Replace with actual bounty value
 
-        uint256[] memory feeds = morpheus.requestFeeds{value: 0.0001 ether}(
+        uint256[] memory feeds = morpheus.requestFeeds{value: 0.001 ether}(
             apiEndpoint,
             apiEndpointPath,
             decimals,
@@ -132,7 +133,8 @@ function requestPrice0Feed() internal {
      Price0feed = feeds[0];
     }
     //used from docs
-function requestPrice1Feed() public payable {
+function requestPrice1Feed() external payable {
+        require(msg.value>=0.001 ether);
         string[] memory apiEndpoint = new string[](1);
         apiEndpoint[0] = string.concat(
             "https://flaskk-bye6.onrender.com/",symbol1, "/", Strings.toString(endDate));            
@@ -144,8 +146,8 @@ function requestPrice1Feed() public payable {
         decimals[0] = 0;
 
         uint256[] memory bounties = new uint256[](1);
-        bounties[0] = 0.0001 ether;
-        uint256[] memory feeds = morpheus.requestFeeds{value: 0.0001 ether}(
+        bounties[0] = 0.001 ether;
+        uint256[] memory feeds = morpheus.requestFeeds{value: 0.001 ether}(
             apiEndpoint,
             apiEndpointPath,
             decimals,
@@ -195,4 +197,3 @@ function requestPrice1Feed() public payable {
 
     }
 }
-
