@@ -15,7 +15,7 @@ def requestss(symbol,time):
    k= requests.get(url, headers=headers)
    print(k.json())
    l= k.json()["data"][symbol][0]["quotes"][0]["quote"]["USD"]["price"]
-   return l
+   return l*1*10**18
 @app.route('/')
 def home():
     return 'Hi!'
