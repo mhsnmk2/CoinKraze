@@ -4,15 +4,16 @@ pragma solidity ^0.8.0;
 import "./CoinKraze.sol";
 
 contract CoinKrazeFactory {
-    address[] public deployedContracts;
+    address[] public deployedContests;
+    uint256 totalContests=0;
     address platformWallet;
     uint256 percentage=10; 
-    event NewCoinKrazeContract(address indexed deployedAddress);
+    event newContest(address indexed deployedAddress);
     constructor(address _platformWallet){
         platformWallet= _platformWallet;
     }
 
-    function createCoinKraze(
+    function createContest(
         address _token0,
         address _token1,
         string memory _symbol0,
@@ -28,12 +29,13 @@ contract CoinKrazeFactory {
             _symbol1,
             _endDate
         );
-        deployedContracts.push(address(newContract));
-        emit NewCoinKrazeContract(address(newContract));
+        ++totalContests;
+        deployedContests.push(address(newContract));
+        emit newContest(address(newContract));
     }
 
-    function getDeployedContracts() external view returns (address[] memory) {
-        return deployedContracts;
+    function getDeployedContests() external view returns (address[] memory) {
+        return deployedContests;
     }
 }
 
