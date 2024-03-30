@@ -160,12 +160,14 @@ function requestPrice1Feed() external payable {
     //used from docs
 
      function Price0() public view returns(uint256 price0) {
+        require(Price0feed >0);
 (price0,,,) = morpheus.getFeed(
             Price0feed
         );
         return price0;
     }
      function Price1() public view returns(uint256 price1) {
+        require(Price1feed >0);
 (price1,,,) = morpheus.getFeed(
             Price1feed
         );
@@ -196,4 +198,6 @@ function requestPrice1Feed() external payable {
 
 
     }
+
+    
 }
