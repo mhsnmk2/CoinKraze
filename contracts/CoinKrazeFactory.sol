@@ -1,14 +1,16 @@
 
-    // SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-
 import "./CoinKraze.sol";
 
 contract CoinKrazeFactory {
     address[] public deployedContracts;
-    address platformWallet=msg.sender;
+    address platformWallet;
     uint256 percentage=10; 
     event NewCoinKrazeContract(address indexed deployedAddress);
+    constructor(address _platformWallet){
+        platformWallet= _platformWallet;
+    }
 
     function createCoinKraze(
         address _token0,
