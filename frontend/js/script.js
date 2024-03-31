@@ -711,7 +711,7 @@ async function init() {
         console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
     }
 
-    const address = '0x75358c176c297Fc85713795c0174ef3dBaf7Ca5D';
+    const address = '0xF276e91406696271148789609F7460c4FF249B67';
 
     // Initialize contract instance
     contract = new web3.eth.Contract(abi, address);
@@ -802,7 +802,7 @@ depositToken2Btn.addEventListener('click', async () => {
 
      }
      await contestContract.methods.depositCoins(BigInt(amount),token1).send({ from: account[0] });
-     console.log('Token 1 deposited successfully');
+     console.log('Token 2 deposited successfully');
  } catch (error) {
      console.error(error);
  }
