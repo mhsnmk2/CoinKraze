@@ -55,7 +55,8 @@ contract CoinKraze {
     mapping(address => uint256) public Balances0;
     mapping(address => uint256) public Balances1;
     bool public contestEnded=false;
-    address tokenWon;
+    address public tokenWon;
+    uint256 public platformFee;
 
     event ContestEnded(uint256 totalAlicecoins, uint256 totalBobcoins, address aliceWins);
 
@@ -92,7 +93,7 @@ contract CoinKraze {
         total0Coins += amount;
 
         }
-        else{
+        if (deposit==token1){
  Balances1[msg.sender] += amount;
         total1Coins += amount;
         }
@@ -109,13 +110,13 @@ contract CoinKraze {
         uint256 price0= Price0();
         uint256 price1= Price1(); 
         require(price0 !=0 && price1 !=0, "Waiting for feed");
-        address tokenWins = (price0 * total0Coins) > (price1 * total1Coins)? token0: token1;
+        tokenWon = (price0 * total0Coins) > (price1 * total1Coins)? token0: token1;
 
-        uint256 platformFee = (total0Coins + total1Coins) * platformFeePercentage / 100;
+        platformFee = (total0Coins + total1Coins) * platformFeePercentage / 100;
         IERC20(token0).transfer(platformWallet, platformFee);
         IERC20(token1).transfer(platformWallet, platformFee);
         contestEnded=true;
-        emit ContestEnded(total0Coins, total1Coins, tokenWins);
+        emit ContestEnded(total0Coins, total1Coins, tokenWon);
     }
     //used from docs
 
@@ -197,15 +198,15 @@ function requestPrice1Feed() external payable {
             bal= Balances0[msg.sender];
             require(bal>0);
             Balances0[msg.sender]= 0;
-            profit = ((bal/ total0Coins))*total1Coins;   
+            profit = (bal/ (total0Coins-platformFee))*(total1Coins-platformFee);   
             IERC20(token0).transfer(msg.sender,bal);
             IERC20(token1).transfer(msg.sender,profit);
         }
-        else{
+        if(tokenWon==token1){
             bal= Balances1[msg.sender];
             require(bal>0);
             Balances1[msg.sender]= 0;
-            profit = ((bal/ total1Coins))*total0Coins;   
+            profit = (bal/ (total1Coins-platformFee))*(total0Coins-platformFee);   
             IERC20(token1).transfer(msg.sender,bal);
             IERC20(token0).transfer(msg.sender,profit);
         }
